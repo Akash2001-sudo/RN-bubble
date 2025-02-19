@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Vibration, Platform } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 
@@ -7,7 +7,16 @@ const ChevronButton = ({ onToggle }) => {
   const [open, setOpen] = useState(false);
   const rotation = useSharedValue(0);
 
+  const triggerHapticFeedback = () => {
+    if (Platform.OS === "ios") {
+      Vibration.vibrate([0, 50, 50, 50]); // Mimics haptic feedback
+    } else {
+      Vibration.vibrate(100); // Strong vibration for Android
+    }
+  };
+
   const toggle = () => {
+    triggerHapticFeedback(); // Vibrates when toggling
     setOpen((prev) => {
       const newOpen = !prev;
       rotation.value = withTiming(newOpen ? 90 : 0, { duration: 300 });
